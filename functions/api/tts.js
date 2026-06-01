@@ -48,7 +48,7 @@ export async function onRequest(context) {
 
     body: JSON.stringify({
 
-      app: { appid: '4856880348', token: 'rQKDqQhHgdXeHJFhvi5ubCFvaIFyf_3n' },
+      app: { appid: '4856880348', token: 'rQKDqQhHgdXeHJFhvi5ubCFvaIFyf_3n' ,cluster: 'volcengine_tts'},
 
       user: { uid: 'story_game' },
 
