@@ -1,76 +1,81 @@
-export async function onRequest(context) {
+export default async function onRequest(context) {
 
   const { request } = context;
 
   const origin = request.headers.get('Origin') || '*';
 
-  if (request.method === 'OPTIONS' || request.method === 'GET') {
+  const corsHeaders = {
 
-    return new Response(null, {
+    'Access-Control-Allow-Origin': origin,
 
-      headers: {
+    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
 
-        'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Headers': 'Content-Type',
 
-        'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Allow-Credentials': 'true'
 
-        'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
+  };
 
-        'Access-Control-Allow-Headers': 'Content-Type'
+  if (request.method === 'OPTIONS') {
 
-      }
-
-    });
+    return new Response(null, { status: 204, headers: corsHeaders });
 
   }
 
-  const { text } = await request.json();
+  if (request.method === 'POST' && new URL(request.url).pathname === '/api/tts') {
 
-  const reqid = Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+    try {
 
-  const resp = await fetch('https://openspeech.bytedance.com/api/v1/tts', {
+      const { text } = await request.json();
 
-    method: 'POST',
+      if (!text) throw new Error('text is required');
 
-    headers: {
+      const body = JSON.stringify({
 
-      'Content-Type': 'application/json',
+        app: { appid: '4856880348', token: 'AKLTMWRlOGMwZDUxNDQxNDM5NmJmZDFkNTcyNDk0MGM2NmE', cluster: 'volcano_tts' },
 
-      'Authorization': 'Bearer;rQKDqQhHgdXeHJFhvi5ubCFvaIFyf_3n',
+        user: { uid: 'story_game' },
 
-      'X-Api-Resource-Id': 'volc.tts.default'
+        audio: { voice_type: 'zh_female_shuangkuaisisi_moon_bigtts', encoding: 'mp3', rate: 24000, speed_ratio: 1.0, volume_ratio: 1.0, pitch_ratio: 1.0 },
 
-    },
+        request: { reqid: Date.now() + '_' + Math.random().toString(36).slice(2, 10), text, text_type: 'plain', operation: 'query' }
 
-    body: JSON.stringify({
+      });
 
-      app: { appid: '4856880348', token: 'rQKDqQhHgdXeHJFhvi5ubCFvaIFyf_3n', cluster: 'volcano_tts' },
+      const ttsResp = await fetch('https://openspeech.bytedance.com/api/v1/tts', {
 
-      user: { uid: 'story_game' },
+        method: 'POST',
 
-      audio: { voice_type: 'zh_female_shuangkuaisisi_moon_bigtts', encoding: 'mp3' },
+        headers: {
 
-      request: { reqid, text, text_type: 'plain', operation: 'query' }
+          'Content-Type': 'application/json',
 
-    })
+          'Authorization': 'Bearer;AKLTMWRlOGMwZDUxNDQxNDM5NmJmZDFkNTcyNDk0MGM2NmE'
 
-  });
+        },
 
+        body
 
-  const data = await resp.text();
+      });
 
-  return new Response(data, {
+      const data = await ttsResp.json();
 
-    headers: {
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-      'Content-Type': 'application/json',
+    } catch (e) {
 
-      'Access-Control-Allow-Origin': origin,
-
-      'Access-Control-Allow-Credentials': 'true'
+      return new Response(JSON.stringify({ code: -1, message: e.message }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
     }
 
-  });
+  }
+
+  if (request.method === 'GET') {
+
+    return new Response(JSON.stringify({ code: 0, message: 'TTS service running' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+
+  }
+
+  return new Response('Not Found', { status: 404, headers: corsHeaders });
 
 }
