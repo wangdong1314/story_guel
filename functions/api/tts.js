@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 
 const app = new Hono()
 
-app.post('/api/tts', async (c) => {
+app.post('/', async (c) => {
 
   const { text } = await c.req.json()  // 前端只传 { text: "..." }
 
@@ -42,7 +42,7 @@ app.post('/api/tts', async (c) => {
 
 })
 
-app.options('/api/tts', (c) => {
+app.options('/', (c) => {
 
   return new Response(null, {
 
