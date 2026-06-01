@@ -36,7 +36,9 @@ export async function onRequest(context) {
 
       'Content-Type': 'application/json',
 
-      'Authorization': 'Bearer;rQKDqQhHgdXeHJFhvi5ubCFvaIFyf_3n'
+      'Authorization': 'Bearer;rQKDqQhHgdXeHJFhvi5ubCFvaIFyf_3n',
+
+      'X-Api-Resource-Id': 'volc.tts.default'
 
     },
 
@@ -53,6 +55,7 @@ export async function onRequest(context) {
     })
 
   });
+
 
   const data = await resp.text();
 
