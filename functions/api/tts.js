@@ -52,7 +52,7 @@ export async function onRequest(context) {
 
       user: { uid: 'story_game' },
 
-      audio: { voice_type: 'zh_female_shuangkuaisixue_moon_bigtts', encoding: 'mp3' },
+      audio: { voice_type: 'BV001_streaming', encoding: 'mp3' },
 
       request: { reqid, text, text_type: 'plain', operation: 'query' }
 
