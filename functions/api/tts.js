@@ -2,15 +2,19 @@ export async function onRequest(context) {
 
   const { request } = context;
 
-  if (request.method === 'OPTIONS') {
+  const origin = request.headers.get('Origin') || '*';
+
+  if (request.method === 'OPTIONS' || request.method === 'GET') {
 
     return new Response(null, {
 
       headers: {
 
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': origin,
 
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Credentials': 'true',
+
+        'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
 
         'Access-Control-Allow-Headers': 'Content-Type'
 
@@ -48,7 +52,7 @@ export async function onRequest(context) {
 
   return new Response(data, {
 
-    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': origin, 'Access-Control-Allow-Credentials': 'true' }
 
   });
 
