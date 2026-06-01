@@ -1,12 +1,26 @@
-import { Hono } from 'hono'
+export async function onRequest(context) {
 
-const app = new Hono()
+  const { request } = context;
 
-app.post('/', async (c) => {
+  if (request.method === 'OPTIONS') {
 
-  const { text } = await c.req.json()  // 前端只传 { text: "..." }
+    return new Response(null, {
 
-  
+      headers: {
+
+        'Access-Control-Allow-Origin': '*',
+
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+
+        'Access-Control-Allow-Headers': 'Content-Type'
+
+      }
+
+    });
+
+  }
+
+  const { text } = await request.json();
 
   const body = JSON.stringify({
 
@@ -18,9 +32,7 @@ app.post('/', async (c) => {
 
     request: { reqid: Date.now() + '_' + Math.random().toString(36).slice(2, 10), text, text_type: 'plain', operation: 'query' }
 
-  })
-
-  
+  });
 
   const resp = await fetch('https://openspeech.bytedance.com/api/v1/tts', {
 
@@ -30,34 +42,14 @@ app.post('/', async (c) => {
 
     body
 
-  })
+  });
 
-  const data = await resp.text()
+  const data = await resp.text();
 
   return new Response(data, {
 
     headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
 
-  })
+  });
 
-})
-
-app.options('/', (c) => {
-
-  return new Response(null, {
-
-    headers: {
-
-      'Access-Control-Allow-Origin': '*',
-
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-
-      'Access-Control-Allow-Headers': 'Content-Type'
-
-    }
-
-  })
-
-})
-
-export default app
+}
