@@ -26,6 +26,8 @@ export async function onRequest(context) {
 
   const { text } = await request.json();
 
+  const reqid = Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+
   const resp = await fetch('https://openspeech.bytedance.com/api/v1/tts', {
 
     method: 'POST',
@@ -40,15 +42,19 @@ export async function onRequest(context) {
 
       'X-Api-Resource-Id': 'seed-tts-2.0',
 
-      'X-Api-Request-Id': Date.now() + '_' + Math.random().toString(36).slice(2, 10)
+      'X-Api-Request-Id': reqid
 
     },
 
     body: JSON.stringify({
 
+      app: { appid: '4856880348', token: 'rQKDqQhHgdXeHJFhvi5ubCFvaIFyf_3n', cluster: 'volcano_tts' },
+
+      user: { uid: 'story_game' },
+
       audio: { voice_type: 'zh_female_shuangkuaisixue_moon_bigtts', encoding: 'mp3' },
 
-      request: { text, text_type: 'plain', operation: 'query' }
+      request: { reqid, text, text_type: 'plain', operation: 'query' }
 
     })
 
@@ -70,4 +76,4 @@ export async function onRequest(context) {
 
   });
 
-    }
+}
