@@ -26,25 +26,31 @@ export async function onRequest(context) {
 
   const { text } = await request.json();
 
-  const body = JSON.stringify({
-
-    app: { appid: '4856880348', token: 'AKLTMWRlOGMwZDUxNDQxNDM5NmJmZDFkNTcyNDk0MGM2NmE', cluster: 'volcano_tts' },
-
-    user: { uid: 'story_game' },
-
-    audio: { voice_type: 'zh_female_shuangkuaisixue_moon_bigtts', encoding: 'mp3', rate: 24000, speed_ratio: 1.0, volume_ratio: 1.0, pitch_ratio: 1.0 },
-
-    request: { reqid: Date.now() + '_' + Math.random().toString(36).slice(2, 10), text, text_type: 'plain', operation: 'query' }
-
-  });
-
   const resp = await fetch('https://openspeech.bytedance.com/api/v1/tts', {
 
     method: 'POST',
 
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer;AKLTMWRlOGMwZDUxNDQxNDM5NmJmZDFkNTcyNDk0MGM2NmE' },
+    headers: {
 
-    body
+      'Content-Type': 'application/json',
+
+      'X-Api-App-Id': '4856880348',
+
+      'X-Api-Access-Key': 'rQKDqQhHgdXeHJFhvi5ubCFvaIFyf_3n',
+
+      'X-Api-Resource-Id': 'seed-tts-2.0',
+
+      'X-Api-Request-Id': Date.now() + '_' + Math.random().toString(36).slice(2, 10)
+
+    },
+
+    body: JSON.stringify({
+
+      audio: { voice_type: 'zh_female_shuangkuaisixue_moon_bigtts', encoding: 'mp3' },
+
+      request: { text, text_type: 'plain', operation: 'query' }
+
+    })
 
   });
 
@@ -52,8 +58,16 @@ export async function onRequest(context) {
 
   return new Response(data, {
 
-    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': origin, 'Access-Control-Allow-Credentials': 'true' }
+    headers: {
+
+      'Content-Type': 'application/json',
+
+      'Access-Control-Allow-Origin': origin,
+
+      'Access-Control-Allow-Credentials': 'true'
+
+    }
 
   });
 
-}
+    }
