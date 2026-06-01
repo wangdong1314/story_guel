@@ -36,23 +36,17 @@ export async function onRequest(context) {
 
       'Content-Type': 'application/json',
 
-      'X-Api-App-Id': '4856880348',
-
-      'X-Api-Access-Key': 'rQKDqQhHgdXeHJFhvi5ubCFvaIFyf_3n',
-
-      'X-Api-Resource-Id': 'seed-tts-2.0',
-
-      'X-Api-Request-Id': reqid
+      'Authorization': 'Bearer;rQKDqQhHgdXeHJFhvi5ubCFvaIFyf_3n'
 
     },
 
     body: JSON.stringify({
 
-      app: { appid: '4856880348', token: 'rQKDqQhHgdXeHJFhvi5ubCFvaIFyf_3n' ,cluster: 'volcengine_tts'},
+      app: { appid: '4856880348', token: 'rQKDqQhHgdXeHJFhvi5ubCFvaIFyf_3n', cluster: 'volcano_tts' },
 
       user: { uid: 'story_game' },
 
-      audio: { voice_type: 'BV001_streaming', encoding: 'mp3' },
+      audio: { voice_type: 'zh_female_shuangkuaisixue_moon_bigtts', encoding: 'mp3' },
 
       request: { reqid, text, text_type: 'plain', operation: 'query' }
 
